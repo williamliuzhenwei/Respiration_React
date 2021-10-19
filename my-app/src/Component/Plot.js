@@ -1,6 +1,6 @@
 import React from 'react';
+import {Button} from 'antd';
 import { Line } from '@ant-design/charts';
-import Toggle from './Toggle';
 
 
 
@@ -14,10 +14,11 @@ var entry = {};
     // data[i].Resistance = parseFloat(data[i].Resistance, 10);
     // data[i].Resistance -= 700;
 // }
+// Toggle = new Toggle;
 
 const config = {
   data,
-  height: 600,
+
   xField: 'TimeStamp',
   yField: 'Rate',
   label: {
@@ -41,14 +42,20 @@ class Plot extends React.Component {
   constructor() {
     super();
     this.state = {
-        date: new Date()
+        date: new Date(),
+        isToggleOn: true
     }
+}
+handleClick = () => {
+  this.setState(state => ({
+    isToggleOn: !state.isToggleOn
+  }));
 }
 
 componentDidMount() {
     this.timerID = setInterval(
         () => this.tick(),
-        2000
+        10000
     );
 }
 
@@ -59,18 +66,39 @@ componentWillUnmount() {
 tick() {
     let rate = Math.floor(Math.random() * (16 - 12) + 12);
     entry = {TimeStamp: timer1, Rate: rate};
-    timer1 = timer1 + 10;
+    timer1 = timer1 + 1;
+  if (this.state.isToggleOn == true){
     data.push(entry)
+  } else if (this.state.isToggleOn == false) {
+    timer1 = timer1 - 1;
+    entry = {TimeStamp: timer1, Rate: 0}
+    data.push(entry)
+  }
     this.setState({
         date: new Date()
     })
 }
       render = () => {
-        // if (Toggle.state.isToggleOn == true){
-          return <Line {...config} />;
-        // } else if (Toggle.state.isToggleOn == false){
-        //   data = [];
-        // }
+        if (this.state.isToggleOn == true){
+          return (
+            <>
+          
+          <Button id = "toggle" style= {{textAlign:'center'}} type = 'primary' onClick={this.handleClick}>
+                  {this.state.isToggleOn ? 'ON' : 'OFF'}
+          </Button>
+          <Line {...config} />
+          </>);
+        } else if (this.state.isToggleOn == false){
+          // data = [];
+          return (
+          <>
+          
+          <Button id = "toggle" style= {{textAlign:'center'}} type = 'secondary' onClick={this.handleClick}>
+                  {this.state.isToggleOn ? 'ON' : 'OFF'}
+          </Button> 
+          <Line {...config} />
+          </>);
+        }
         
       }
        

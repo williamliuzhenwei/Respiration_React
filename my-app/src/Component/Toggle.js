@@ -16,13 +16,13 @@ class Toggle extends React.Component {
     render() {
         if (this.state.isToggleOn == true){
             return (
-                <Button style= {{}} type = 'primary' onClick={this.handleClick}>
+                <Button id = "toggle" style= {{}} type = 'primary' onClick={this.handleClick}>
                   {this.state.isToggleOn ? 'ON' : 'OFF'}
                 </Button>
               );
         } else if (this.state.isToggleOn == false){
             return (
-                <Button style= {{}} type = 'secondary' onClick={this.handleClick}>
+                <Button id = "toggle" style= {{}} type = 'secondary' onClick={this.handleClick}>
                   {this.state.isToggleOn ? 'ON' : 'OFF'}
                 </Button>
               );

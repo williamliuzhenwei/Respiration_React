@@ -22,10 +22,14 @@ class App extends React.Component {
     <Clock /> 
       </div>
     <div>
-      <h1 style= {{textAlign : 'center'}}>Respiration rate chart &nbsp;&nbsp;<Toggle /></h1>
+      <h1 style= {{textAlign : 'center'}}>Respiration rate chart &nbsp;&nbsp;
+      {/* <Toggle /> */}
+      </h1>
       
     </div>
+    <div style= {{textAlign : 'center'}}>
     <Plot />
+    </div>
     <div>
       <h1 style = {{textAlign: 'center'}}>
         The Respiration rate is

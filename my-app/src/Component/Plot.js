@@ -69,10 +69,19 @@ tick() {
     timer1 = timer1 + 1;
   if (this.state.isToggleOn == true){
     data.push(entry)
+    if (rate > 13){
+      document.getElementById("resRate").innerHTML = rate;
+      document.getElementById("resRate").className = "resRate_red";
+    } else if (rate <= 13){
+      document.getElementById("resRate").innerHTML = rate;
+      document.getElementById("resRate").className = "resRate_black";
+    }
+    
   } else if (this.state.isToggleOn == false) {
     timer1 = timer1 - 1;
     entry = {TimeStamp: timer1, Rate: 0}
     data.push(entry)
+    document.getElementById("resRate").innerHTML = 0;
   }
     this.setState({
         date: new Date()
@@ -87,6 +96,8 @@ tick() {
                   {this.state.isToggleOn ? 'ON' : 'OFF'}
           </Button>
           <Line {...config} />
+          <br></br>
+          <h2>Respiration Rate</h2>
           </>);
         } else if (this.state.isToggleOn == false){
           // data = [];
@@ -97,6 +108,7 @@ tick() {
                   {this.state.isToggleOn ? 'ON' : 'OFF'}
           </Button> 
           <Line {...config} />
+          <h2>Respiration Rate</h2>
           </>);
         }
         

@@ -7,6 +7,7 @@ import React from 'react';
 import Toggle from './Component/Toggle'
 
 import './index.css'
+import './text.css'
 
 class App extends React.Component {
 
@@ -30,10 +31,11 @@ class App extends React.Component {
     <div style= {{textAlign : 'center'}}>
     <Plot />
     </div>
+  
     <div>
-      <h1 style = {{textAlign: 'center'}}>
-        The Respiration rate is
+      <h1  id = "resRate" className = "resRate_red" style = {{textAlign: 'center', fontSize:50}}>
         </h1>
+
       </div>
     </>
       );

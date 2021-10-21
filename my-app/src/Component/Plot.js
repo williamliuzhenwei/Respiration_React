@@ -8,7 +8,7 @@ import { Line } from '@ant-design/charts';
 var data = [];
 var timer1 = 0;
 var entry = {};
-
+var res = {};
 // for (var i = 0; i < data.length; i++){
     // data[i].TimeStamp = data[i].TimeStamp - +1.726925E+04;
     // data[i].Resistance = parseFloat(data[i].Resistance, 10);
@@ -38,6 +38,12 @@ const config = {
   },
 };
 
+const fetchData = () => {
+  
+  return fetch("https://api.particle.io/v1/devices/2d004e000d51353532343635/analogvalue?access_token=4ec91795c48fcb469901a8c61e670f4d75ec5cce")
+        .then((response) => response.json())
+        .then((data) => res = data);}
+
 class Plot extends React.Component {
   constructor() {
     super();
@@ -64,17 +70,23 @@ componentWillUnmount() {
 }
 
 tick() {
-    let rate = Math.floor(Math.random() * (16 - 12) + 12);
+    fetchData();
+    console.log(1);
+    //res.result substiture 
+    let rate = Math.floor(Math.random() * (17 - 8) + 8);
     entry = {TimeStamp: timer1, Rate: rate};
     timer1 = timer1 + 1;
   if (this.state.isToggleOn == true){
     data.push(entry)
-    if (rate > 13){
+    if (rate > 14){
       document.getElementById("resRate").innerHTML = rate;
       document.getElementById("resRate").className = "resRate_red";
-    } else if (rate <= 13){
+    } else if (rate <= 14 && rate > 11){
       document.getElementById("resRate").innerHTML = rate;
-      document.getElementById("resRate").className = "resRate_black";
+      document.getElementById("resRate").className = "resRate_green";
+    } else if (rate <= 11){
+      document.getElementById("resRate").innerHTML = rate;
+      document.getElementById("resRate").className = "resRate_red";
     }
     
   } else if (this.state.isToggleOn == false) {
@@ -90,11 +102,11 @@ tick() {
       render = () => {
         if (this.state.isToggleOn == true){
           return (
-            <>
-          
+          <>
           <Button id = "toggle" style= {{textAlign:'center'}} type = 'primary' onClick={this.handleClick}>
                   {this.state.isToggleOn ? 'ON' : 'OFF'}
           </Button>
+          <br></br>
           <Line {...config} />
           <br></br>
           <h2>Respiration Rate</h2>
@@ -107,7 +119,9 @@ tick() {
           <Button id = "toggle" style= {{textAlign:'center'}} type = 'secondary' onClick={this.handleClick}>
                   {this.state.isToggleOn ? 'ON' : 'OFF'}
           </Button> 
+          <br></br>
           <Line {...config} />
+          <br></br>
           <h2>Respiration Rate</h2>
           </>);
         }

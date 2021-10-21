@@ -1,16 +1,15 @@
-import logo from './logo.svg';
 import Plot from './Component/Plot'
 import Clock from './Component/Clock'
 import Login from './Component/Login'
 import Register from './Component/Register'
 import React from 'react';
-import Toggle from './Component/Toggle'
 
 import './index.css'
 import './text.css'
 
-class App extends React.Component {
 
+class App extends React.Component {
+  
   render = () => {
     return (
     <>

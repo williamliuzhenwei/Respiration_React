@@ -13,8 +13,14 @@ class App extends React.Component {
   render = () => {
     return (
     <>
-    
-    <div style={{ textAlign:'right', marginTop: 15, marginRight: 15}}>
+    <html style={{ 
+            // backgroundColor: '#fffbe6'
+          }}> 
+    <body >
+    <div style={{ textAlign:'right',
+                  marginTop: 15,
+                  marginRight: 15, 
+          }}>
       
     <Login />
       &nbsp;
@@ -36,6 +42,8 @@ class App extends React.Component {
         </h1>
 
       </div>
+      </body>
+      </html>
     </>
       );
   }   

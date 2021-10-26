@@ -42,7 +42,8 @@ const fetchData = () => {
   
   return fetch("https://api.particle.io/v1/devices/2d004e000d51353532343635/analogvalue?access_token=4ec91795c48fcb469901a8c61e670f4d75ec5cce")
         .then((response) => response.json())
-        .then((data) => res = data);}
+        .then((data) => res = data)
+        .then(console.log(res));}
 
 class Plot extends React.Component {
   constructor() {
@@ -61,7 +62,7 @@ handleClick = () => {
 componentDidMount() {
     this.timerID = setInterval(
         () => this.tick(),
-        10000
+        1000
     );
 }
 
@@ -71,29 +72,31 @@ componentWillUnmount() {
 
 tick() {
     fetchData();
-    console.log(1);
     //res.result substiture 
     let rate = Math.floor(Math.random() * (17 - 8) + 8);
-    entry = {TimeStamp: timer1, Rate: rate};
+    entry = {TimeStamp: timer1, Rate: res.result};
     timer1 = timer1 + 1;
   if (this.state.isToggleOn == true){
     data.push(entry)
     if (rate > 14){
-      document.getElementById("resRate").innerHTML = rate;
-      document.getElementById("resRate").className = "resRate_red";
+      document.getElementById("resRate").innerHTML = res.result;
+      document.getElementById("resRate").className = "resRate_black";
     } else if (rate <= 14 && rate > 11){
-      document.getElementById("resRate").innerHTML = rate;
-      document.getElementById("resRate").className = "resRate_green";
+      document.getElementById("resRate").innerHTML = res.result;
+      document.getElementById("resRate").className = "resRate_black";
     } else if (rate <= 11){
-      document.getElementById("resRate").innerHTML = rate;
+      document.getElementById("resRate").innerHTML = res.result;
+      document.getElementById("resRate").className = "resRate_black";
+    } else if (rate <= 0 || rate == "undefined"){
+      document.getElementById("resRate").innerHTML = "Don't hold your breath!";
       document.getElementById("resRate").className = "resRate_red";
-    }
+    } 
     
   } else if (this.state.isToggleOn == false) {
     timer1 = timer1 - 1;
     entry = {TimeStamp: timer1, Rate: 0}
     data.push(entry)
-    document.getElementById("resRate").innerHTML = 0;
+    document.getElementById("resRate").innerHTML = "Disconnected";
   }
     this.setState({
         date: new Date()
@@ -112,6 +115,7 @@ tick() {
           <h2>Respiration Rate</h2>
           </>);
         } else if (this.state.isToggleOn == false){
+          document.getElementById("resRate").innerHTML = "Disconnected";
           // data = [];
           return (
           <>

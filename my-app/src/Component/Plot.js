@@ -39,8 +39,9 @@ const config = {
 };
 
 const fetchData = () => {
-  
-  return fetch("https://api.particle.io/v1/devices/2d004e000d51353532343635/analogvalue?access_token=4ec91795c48fcb469901a8c61e670f4d75ec5cce")
+  // David https://api.particle.io/v1/devices/440048000d51353532343635/output1?access_token=5337556d927166dd61f24a448628ab25b487250d
+  // Siyuan https://api.particle.io/v1/devices/2d004e000d51353532343635/analogvalue?access_token=4ec91795c48fcb469901a8c61e670f4d75ec5cce
+  return fetch("https://api.particle.io/v1/devices/440048000d51353532343635/respiration?access_token=5337556d927166dd61f24a448628ab25b487250d")
         .then((response) => response.json())
         .then((data) => res = data)
         .then(console.log(res));}
@@ -73,24 +74,33 @@ componentWillUnmount() {
 tick() {
     fetchData();
     //res.result substiture 
-    let rate = Math.floor(Math.random() * (17 - 8) + 8);
-    entry = {TimeStamp: timer1, Rate: res.result};
+    // let rate = Math.floor(Math.random() * (17 - 8) + 8);
+    entry = {TimeStamp: timer1, Rate: Math.round(res.result)};
     timer1 = timer1 + 1;
   if (this.state.isToggleOn == true){
-    data.push(entry)
-    if (rate > 14){
+    // if (res.result == "analogvalue"){
+    //   console.log("ana");
+    // }
+    if (res.result > 14 && res.result < 30){
+      data.push(entry)
       document.getElementById("resRate").innerHTML = res.result;
       document.getElementById("resRate").className = "resRate_black";
-    } else if (rate <= 14 && rate > 11){
+    } else if (res.result <= 14 && res.result > 11){
+      data.push(entry)
       document.getElementById("resRate").innerHTML = res.result;
       document.getElementById("resRate").className = "resRate_black";
-    } else if (rate <= 11){
+    } else if (res.result <= 11 && res.result > 3){
+      data.push(entry)
       document.getElementById("resRate").innerHTML = res.result;
       document.getElementById("resRate").className = "resRate_black";
-    } else if (rate <= 0 || rate == "undefined"){
+    } else if (res.result <= 0 || res.result == "undefined"){
       document.getElementById("resRate").innerHTML = "Don't hold your breath!";
       document.getElementById("resRate").className = "resRate_red";
-    } 
+    } else{
+      timer1 = timer1 - 1;
+      document.getElementById("resRate").innerHTML = "Check connection";
+      document.getElementById("resRate").className = "resRate_red";
+    }
     
   } else if (this.state.isToggleOn == false) {
     timer1 = timer1 - 1;
@@ -112,7 +122,6 @@ tick() {
           <br></br>
           <Line {...config} />
           <br></br>
-          <h2>Respiration Rate</h2>
           </>);
         } else if (this.state.isToggleOn == false){
           document.getElementById("resRate").innerHTML = "Disconnected";
@@ -126,7 +135,7 @@ tick() {
           <br></br>
           <Line {...config} />
           <br></br>
-          <h2>Respiration Rate</h2>
+          
           </>);
         }
         

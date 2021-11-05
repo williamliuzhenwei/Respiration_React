@@ -1,0 +1,1 @@
+{"version":3,"sources":["webpack://src/text.css"],"names":[],"mappings":"AAAA,eACI,UACJ,CAEA,aACI,SACJ,CAEA,eACI,WACJ","file":"main.b44998ab.chunk.css","sourcesContent":[".resRate_black{\n    color: black;\n}\n\n.resRate_red{\n    color: red;\n}\n\n.resRate_green{\n    color: green;\n}"]}

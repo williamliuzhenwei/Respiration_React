@@ -13,8 +13,8 @@ class App extends React.Component {
   render = () => {
     return (
     <>
-    <html style={{ 
-            // backgroundColor: '#fffbe6'
+    <html className =  "grey" style={{ 
+            backgroundColor: 'grey'
           }}> 
     <body >
     <div style={{ textAlign:'right',
@@ -25,7 +25,7 @@ class App extends React.Component {
     <Login />
       &nbsp;
     <Register />
-    <Clock /> 
+    <Clock className="grey"/> 
       </div>
     <div>
       <h1 style= {{textAlign : 'center'}}>Respiration rate chart &nbsp;&nbsp;

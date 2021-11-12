@@ -9,16 +9,10 @@ var data = [];
 var timer1 = 0;
 var entry = {};
 var res = {};
-// for (var i = 0; i < data.length; i++){
-    // data[i].TimeStamp = data[i].TimeStamp - +1.726925E+04;
-    // data[i].Resistance = parseFloat(data[i].Resistance, 10);
-    // data[i].Resistance -= 700;
-// }
-// Toggle = new Toggle;
 
+// Main Plot configuration
 const config = {
   data,
-
   xField: 'TimeStamp',
   yField: 'Rate',
   label: {
@@ -26,26 +20,25 @@ const config = {
       fill: '#aaa',
     },
   },
-  // smooth: true,
-  // autoFit: true,
-  // yDim: {
-  //   min: 700,
-  //   max: 800
-  // },
   point: {
     size: 1,
     shape: 'dot',
   },
 };
 
+// Communicate with particle Photon
 const fetchData = () => {
   // David https://api.particle.io/v1/devices/440048000d51353532343635/output1?access_token=5337556d927166dd61f24a448628ab25b487250d
   // Siyuan https://api.particle.io/v1/devices/2d004e000d51353532343635/analogvalue?access_token=4ec91795c48fcb469901a8c61e670f4d75ec5cce
   return fetch("https://api.particle.io/v1/devices/440048000d51353532343635/respiration?access_token=5337556d927166dd61f24a448628ab25b487250d")
         .then((response) => response.json())
         .then((data) => res = data)
-        .then(console.log(res));}
+        .then(console.log(res))
+        .catch(error => {
+          throw(error);
+        });}
 
+// Main Module 
 class Plot extends React.Component {
   constructor() {
     super();
@@ -73,37 +66,32 @@ componentWillUnmount() {
 
 tick() {
     fetchData();
-    //res.result substiture 
-    // let rate = Math.floor(Math.random() * (17 - 8) + 8);
-    entry = {TimeStamp: timer1, Rate: Math.round(res.result)};
-    timer1 = timer1 + 1;
+    // let resR = Math.floor(Math.random() * (17 - 8) + 8);
+    let resR = res.result;
+    
+    
+  
   if (this.state.isToggleOn == true){
-    // if (res.result == "analogvalue"){
-    //   console.log("ana");
-    // }
-    if (res.result > 14 && res.result < 30){
+    if (resR >= 6 && resR <= 60){
+      entry = {TimeStamp: timer1, Rate: Math.round(resR)};
+      timer1 = timer1 + 1;
       data.push(entry)
-      document.getElementById("resRate").innerHTML = res.result;
+      document.getElementById("resRate").innerHTML = Math.round(resR);
       document.getElementById("resRate").className = "resRate_black";
-    } else if (res.result <= 14 && res.result > 11){
-      data.push(entry)
-      document.getElementById("resRate").innerHTML = res.result;
-      document.getElementById("resRate").className = "resRate_black";
-    } else if (res.result <= 11 && res.result > 3){
-      data.push(entry)
-      document.getElementById("resRate").innerHTML = res.result;
-      document.getElementById("resRate").className = "resRate_black";
-    } else if (res.result <= 0 || res.result == "undefined"){
-      document.getElementById("resRate").innerHTML = "Don't hold your breath!";
+    } else if (resR == 0){
+      document.getElementById("resRate").innerHTML = "Measuring";
+      document.getElementById("resRate").className = "resRate_green";
+    }
+    else if (resR < 6 || resR > 60){
+      console.log(resR);
+      document.getElementById("resRate").innerHTML = "Check Epidermal Device";
       document.getElementById("resRate").className = "resRate_red";
-    } else{
-      timer1 = timer1 - 1;
-      document.getElementById("resRate").innerHTML = "Check connection";
+    } else { 
+      document.getElementById("resRate").innerHTML = "Check Device";
       document.getElementById("resRate").className = "resRate_red";
     }
     
   } else if (this.state.isToggleOn == false) {
-    timer1 = timer1 - 1;
     entry = {TimeStamp: timer1, Rate: 0}
     data.push(entry)
     document.getElementById("resRate").innerHTML = "Disconnected";

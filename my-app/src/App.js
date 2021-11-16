@@ -7,7 +7,6 @@ import React from 'react';
 import './index.css'
 import './text.css'
 
-
 class App extends React.Component {
   
   render = () => {

@@ -1,10 +1,9 @@
 import React from 'react';
 import {Button} from 'antd';
 import { Line } from '@ant-design/charts';
+import { ContinuousLegend } from '@antv/g2/lib/dependents';
 
 
-
-//try microphone example
 var data = [];
 var timer1 = 0;
 var entry = {};
@@ -30,13 +29,10 @@ const config = {
 const fetchData = () => {
   // David https://api.particle.io/v1/devices/440048000d51353532343635/output1?access_token=5337556d927166dd61f24a448628ab25b487250d
   // Siyuan https://api.particle.io/v1/devices/2d004e000d51353532343635/analogvalue?access_token=4ec91795c48fcb469901a8c61e670f4d75ec5cce
-  return fetch("https://api.particle.io/v1/devices/440048000d51353532343635/respiration?access_token=5337556d927166dd61f24a448628ab25b487250d")
+  return fetch("https://api.particle.io/v1/devices/440048000d51353532343635/output1?access_token=5337556d927166dd61f24a448628ab25b487250d")
         .then((response) => response.json())
         .then((data) => res = data)
-        .then(console.log(res))
-        .catch(error => {
-          throw(error);
-        });}
+        .then(console.log(res));}
 
 // Main Module 
 class Plot extends React.Component {
@@ -56,6 +52,7 @@ handleClick = () => {
 componentDidMount() {
     this.timerID = setInterval(
         () => this.tick(),
+        // time interval in millis;
         1000
     );
 }
@@ -69,25 +66,25 @@ tick() {
     // let resR = Math.floor(Math.random() * (17 - 8) + 8);
     let resR = res.result;
     
-    
-  
   if (this.state.isToggleOn == true){
-    if (resR >= 6 && resR <= 60){
+    if(res.ok == false){ // Connected, but not reading
+      document.getElementById("resRate").innerHTML = "Photon error || " + res.error ;
+      document.getElementById("resRate").className = "resRate_red";
+    }  else if (resR == 0){  // Connected, Measring 
+      document.getElementById("resRate").innerHTML = "Measuring";
+      document.getElementById("resRate").className = "resRate_green";
+    } else if (resR < 6 || resR > 60){  // Bad result 
+      console.log(resR);
+      document.getElementById("resRate").innerHTML = "Check Epidermal Device (Strain Gauge)"; // Please check adhesive (maybe loose)
+      document.getElementById("resRate").className = "resRate_red";
+    } else if (resR >= 6 && resR <= 60){ // In normal range
       entry = {TimeStamp: timer1, Rate: Math.round(resR)};
       timer1 = timer1 + 1;
       data.push(entry)
       document.getElementById("resRate").innerHTML = Math.round(resR);
       document.getElementById("resRate").className = "resRate_black";
-    } else if (resR == 0){
-      document.getElementById("resRate").innerHTML = "Measuring";
-      document.getElementById("resRate").className = "resRate_green";
-    }
-    else if (resR < 6 || resR > 60){
-      console.log(resR);
-      document.getElementById("resRate").innerHTML = "Check Epidermal Device";
-      document.getElementById("resRate").className = "resRate_red";
     } else { 
-      document.getElementById("resRate").innerHTML = "Check Device";
+      document.getElementById("resRate").innerHTML = "Check connection with Photon";
       document.getElementById("resRate").className = "resRate_red";
     }
     

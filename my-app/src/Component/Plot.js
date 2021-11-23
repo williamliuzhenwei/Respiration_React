@@ -8,6 +8,7 @@ var data = [];
 var timer1 = 0;
 var entry = {};
 var res = {};
+var counter = 10; // To update the graph every 10 seconds
 
 // Main Plot configuration
 const config = {
@@ -53,7 +54,7 @@ componentDidMount() {
     this.timerID = setInterval(
         () => this.tick(),
         // time interval in millis;
-        1000
+        999
     );
 }
 
@@ -62,36 +63,49 @@ componentWillUnmount() {
 }
 
 tick() {
-    fetchData();
-    // let resR = Math.floor(Math.random() * (17 - 8) + 8);
-    let resR = res.result;
-    
+  fetchData();
+  // let resR = Math.floor(Math.random() * (17 - 8) + 8);
+  let resR = res.result;
+  console.log(counter);
   if (this.state.isToggleOn == true){
     if(res.ok == false){ // Connected, but not reading
       document.getElementById("resRate").innerHTML = "Photon error || " + res.error ;
       document.getElementById("resRate").className = "resRate_red";
+      counter = 10;
     }  else if (resR == 0){  // Connected, Measring 
       document.getElementById("resRate").innerHTML = "Measuring";
       document.getElementById("resRate").className = "resRate_green";
+      counter = 10;
     } else if (resR < 6 || resR > 60){  // Bad result 
       console.log(resR);
       document.getElementById("resRate").innerHTML = "Check Epidermal Device (Strain Gauge)"; // Please check adhesive (maybe loose)
       document.getElementById("resRate").className = "resRate_red";
+      counter = 10;
     } else if (resR >= 6 && resR <= 60){ // In normal range
+      if (counter == 10){
       entry = {TimeStamp: timer1, Rate: Math.round(resR)};
       timer1 = timer1 + 1;
       data.push(entry)
       document.getElementById("resRate").innerHTML = Math.round(resR);
       document.getElementById("resRate").className = "resRate_black";
-    } else { 
-      document.getElementById("resRate").innerHTML = "Check connection with Photon";
+      counter = 0;
+      }
+      counter++;
+    } else if (res.error == "Timed out." ){ 
+      document.getElementById("resRate").innerHTML = "Cannot connect to Particle Cloud";
       document.getElementById("resRate").className = "resRate_red";
+      counter = 10;
+    } else {
+      document.getElementById("resRate").innerHTML = "Cannot connection with Photon";
+      document.getElementById("resRate").className = "resRate_red";
+      counter = 10;
     }
     
   } else if (this.state.isToggleOn == false) {
     entry = {TimeStamp: timer1, Rate: 0}
     data.push(entry)
     document.getElementById("resRate").innerHTML = "Disconnected";
+    counter = 10;
   }
     this.setState({
         date: new Date()

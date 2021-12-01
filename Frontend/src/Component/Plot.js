@@ -28,9 +28,9 @@ const config = {
 
 // Communicate with particle Photon
 const fetchData = () => {
-  // David https://api.particle.io/v1/devices/440048000d51353532343635/output1?access_token=5337556d927166dd61f24a448628ab25b487250d
+  // David  https://api.particle.io/v1/devices/440048000d51353532343635/output1?access_token=5337556d927166dd61f24a448628ab25b487250d
   // Siyuan https://api.particle.io/v1/devices/2d004e000d51353532343635/analogvalue?access_token=4ec91795c48fcb469901a8c61e670f4d75ec5cce
-  return fetch("https://api.particle.io/v1/devices/440048000d51353532343635/output1?access_token=5337556d927166dd61f24a448628ab25b487250d")
+  return fetch("https://api.particle.io/v1/devices/440048000d51353532343635/respiration?access_token=5337556d927166dd61f24a448628ab25b487250d")
         .then((response) => response.json())
         .then((data) => res = data)
         .then(console.log(res));}
@@ -48,6 +48,10 @@ handleClick = () => {
   this.setState(state => ({
     isToggleOn: !state.isToggleOn
   }));
+}
+
+refresh = () =>{
+  window.location.reload(false);
 }
 
 componentDidMount() {
@@ -81,23 +85,23 @@ tick() {
       document.getElementById("resRate").innerHTML = "Check Epidermal Device (Strain Gauge)"; // Please check adhesive (maybe loose)
       document.getElementById("resRate").className = "resRate_red";
       counter = 10;
-    } else if (resR >= 6 && resR <= 60){ // In normal range
-      if (counter == 10){
-      entry = {TimeStamp: timer1, Rate: Math.round(resR)};
-      timer1 = timer1 + 1;
-      data.push(entry)
-      document.getElementById("resRate").innerHTML = Math.round(resR);
-      document.getElementById("resRate").className = "resRate_black";
-      counter = 0;
-      }
-      counter++;
     } else if (res.error == "Timed out." ){ 
-      document.getElementById("resRate").innerHTML = "Cannot connect to Particle Cloud";
+      document.getElementById("resRate").innerHTML = "Cannot connect to Photon";
       document.getElementById("resRate").className = "resRate_red";
       counter = 10;
+    } else if (resR >= 6 && resR <= 60){ // In normal range
+        if (counter == 10){
+        entry = {TimeStamp: timer1, Rate: Math.round(resR)};
+        timer1 = timer1 + 1;
+        data.push(entry)
+        document.getElementById("resRate").innerHTML = Math.round(resR);
+        document.getElementById("resRate").className = "resRate_black";
+        counter = 0;
+        }
+        counter++;
     } else {
-      document.getElementById("resRate").innerHTML = "Cannot connection with Photon";
-      document.getElementById("resRate").className = "resRate_red";
+      document.getElementById("resRate").innerHTML = "Checking Status";
+      document.getElementById("resRate").className = "resRate_black";
       counter = 10;
     }
     
@@ -117,6 +121,10 @@ tick() {
           <>
           <Button id = "toggle" style= {{textAlign:'center'}} type = 'primary' onClick={this.handleClick}>
                   {this.state.isToggleOn ? 'ON' : 'OFF'}
+          </Button>
+          &nbsp;&nbsp;&nbsp;&nbsp;
+          <Button id = "refresh" style= {{textAlign:'center'}} type = 'primart' onClick={this.refresh}>
+                Refresh
           </Button>
           <br></br>
           <Line {...config} />
